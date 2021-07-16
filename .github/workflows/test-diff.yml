@@ -16,9 +16,8 @@ jobs:
       - name: Get changed files
         id: changes
         # Set outputs using the command.
-        run: |
+        run:
         git diff -U0 --color | grep '^\e\[[^m]*m[-+]' | grep -Ev '(--- a/|\+\+\+ b/)'
-        echo "::set-output name=all::$(git diff -U0 --color | grep '^\e\[[^m]*m[-+]' | grep -Ev '(--- a/|\+\+\+ b/)' | xargs)"
   lint:
     runs-on: ubuntu-latest
     # require the first job to have ran
