@@ -16,5 +16,14 @@ jobs:
       - name: Get changed files
         id: changes
         # Set outputs using the command.
-        run: git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} -U0 | grep 'review_date:' | cut -d\ -f2
+        run: git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} -U0 | grep 'review_date:' | cut -d\   -f2
         # Checks if there is a difference and stores as accessible output by if highlighted green/red
+  lint:
+    runs-on: ubuntu-latest
+    # require the first job to have ran
+    needs: changedfiles
+    # only run there are changed files
+    if: ${{needs.changedfiles.outputs.all}}
+    steps:
+      - name: echo changed files
+        run: echo ${{needs.changedfiles.outputs.all}}
