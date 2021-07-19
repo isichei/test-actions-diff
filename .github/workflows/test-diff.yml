@@ -17,7 +17,6 @@ jobs:
         id: changes
         # Set outputs using the command.
         run: |
-        git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} -U0 | grep 'review_date:' | cut -d\  -f2 | tail -n +2| head -n 2
         echo "::set-output name=olddate::$(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} -U0 | grep 'review_date:' | cut -d\  -f2 | tail -n +2| head -n 1)"
         echo "::set-output name=newdate::$(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} -U0 | grep 'review_date:' | cut -d\  -f2 | tail -n 1)"
   lint:
@@ -25,7 +24,7 @@ jobs:
     # require the first job to have ran
     needs: changedfiles
     # only run there are changed files
-    if: ${{needs.changedfiles.outputs.olddate}}
+    if: ${{needs.changedfiles.outputs.newdate}}
     steps:
       - name: echo changed files
-        run: echo ${{needs.changedfiles.outputs.olddate}}
+        run: echo ${{needs.changedfiles.outputs.newdate} - {needs.changedfiles.outputs.olddate}}
