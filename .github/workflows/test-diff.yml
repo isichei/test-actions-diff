@@ -17,8 +17,12 @@ jobs:
         id: changes
         # Set outputs using the command.
         run: |
-          echo "GITHUB_OLD_DATE=$(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} -U0 | grep 'review_date:' | cut -d\  -f2 | tail -n +2| head -n 1)"
-          echo "GITHUB_NEW_DATE=$(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} -U0 | grep 'review_date:' | cut -d\  -f2 | tail -n 1)"
+          echo "GITHUB_OLD_DATE=$(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} -U0 | grep 'review_date:' | cut -d\  -f2 | tail -n +2| head -n 1)" >> $GITHUB_ENV
+          echo "GITHUB_NEW_DATE=$(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} -U0 | grep 'review_date:' | cut -d\  -f2 | tail -n 1)" >> $GITHUB_ENV
+      - name: test-changed-files
+        run: |
+          echo $GITHUB_OLD_DATE
+          echo $GITHUB_NEW_DATE
       - name: test dates
         env:
           GITHUB_OLD_DATE: ${{ needs.changed-files-dags.outputs.GITHUB_OLD_DATE }}
