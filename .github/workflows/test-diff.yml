@@ -5,8 +5,8 @@ jobs:
     runs-on: ubuntu-latest
     # Map a step output to a job output
     outputs:
-      all: ${{ steps.changes.outputs.all}}
-      ts: ${{ steps.changes.outputs.ts }}
+      olddate: ${{ steps.changes.outputs.olddate}}
+      newdate: ${{ steps.changes.outputs.newdate }}
     steps:
       # Make sure we have some code to diff.
       - name: Checkout repository
@@ -19,6 +19,12 @@ jobs:
         run: |
         echo "::set-output name=olddate::$(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} -U0 | grep 'review_date:' | cut -d\  -f2 | tail -n +2| head -n 1)"
         echo "::set-output name=newdate::$(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} -U0 | grep 'review_date:' | cut -d\  -f2 | tail -n 1)"
+      - name: test dates
+        run: >
+          python3 -c \
+          'from datetime import datetime as dt;'\
+          'date_diff = dt.strptime(needs.changedfiles.outputs.newdate, "%Y-%m-%d") - dt.strptime(needs.changedfiles.outputs.olddate, "%Y-%m-%d")'
+          'if data_diff.days > 92: raise ValueError("date diff to high");'\
   lint:
     runs-on: ubuntu-latest
     # require the first job to have ran
