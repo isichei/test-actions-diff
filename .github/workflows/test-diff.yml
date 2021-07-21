@@ -21,8 +21,8 @@ jobs:
           echo "::set-output name=newdate::$(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} -U0 | grep 'review_date:' | cut -d\  -f2 | tail -n 1)"
       - name: test dates
         env:
-          OLD_DATE: ${{steps.changed-files.outputs.olddate}}
-          NEW_DATE: ${{steps.changed-files.outputs.newdate}}
+          OLD_DATE: ${{needs.changed-files.outputs.olddate}}
+          NEW_DATE: ${{needs.changed-files.outputs.newdate}}
         run: |
           python3 -c \
           'from datetime import datetime as dt;'\
