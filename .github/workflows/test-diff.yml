@@ -21,12 +21,12 @@ jobs:
           echo "::set-output name=newdate::$(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} -U0 | grep 'review_date:' | cut -d\  -f2 | tail -n 1)"
       - name: test dates
         env:
-          OLD_DATE: needs.changedfiles.outputs.olddate
-          NEW_DATE: needs.changedfiles.outputs.newdate
+          OLD_DATE: ${{needs.changedfiles.outputs.olddate}}
+          NEW_DATE: ${{needs.changedfiles.outputs.newdate}}
         run: |
           python3 -c \
           'from datetime import datetime as dt;'\
           'import os;'\
           'print(os.environ["NEW_DATE"],os.environ["OLD_DATE"]);'\
-          'date_diff = dt.strptime(os.environ["NEW_DATE"], "%Y/%m/%d") - dt.strptime(os.environ["OLD_DATE"], "%Y/%m/%d")'
+          'date_diff = dt.strptime(os.environ["NEW_DATE"], "%Y-%m-%d") - dt.strptime(os.environ["OLD_DATE"], "%Y-%m-%d")'
           'if data_diff.days > 92: raise ValueError("date diff to high");'\
