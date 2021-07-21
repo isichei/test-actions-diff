@@ -25,12 +25,3 @@ jobs:
           'from datetime import datetime as dt;'\
           'date_diff = dt.strptime(needs.changedfiles.outputs.newdate, "%Y-%m-%d") - dt.strptime(needs.changedfiles.outputs.olddate, "%Y-%m-%d")'
           'if data_diff.days > 92: raise ValueError("date diff to high");'\
-  lint:
-    runs-on: ubuntu-latest
-    # require the first job to have ran
-    needs: changedfiles
-    # only run there are changed files
-    if: ${{needs.changedfiles.outputs.newdate}}
-    steps:
-      - name: echo changed files
-        run: echo ${{needs.changedfiles.outputs.newdate} - {needs.changedfiles.outputs.olddate}}
