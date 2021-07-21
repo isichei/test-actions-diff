@@ -17,16 +17,16 @@ jobs:
         id: changes
         # Set outputs using the command.
         run: |
-          echo "::set-output name=olddate::$(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} -U0 | grep 'review_date:' | cut -d\  -f2 | tail -n +2| head -n 1)"
-          echo "::set-output name=newdate::$(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} -U0 | grep 'review_date:' | cut -d\  -f2 | tail -n 1)"
+          echo "GITHUB_OLD_DATE=$(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} -U0 | grep 'review_date:' | cut -d\  -f2 | tail -n +2| head -n 1)"
+          echo "GITHUB_NEW_DATE=$(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} -U0 | grep 'review_date:' | cut -d\  -f2 | tail -n 1)"
       - name: test dates
         env:
-          OLD_DATE: ${{needs.changed-files.outputs.olddate}}
-          NEW_DATE: ${{needs.changed-files.outputs.newdate}}
+          GITHUB_OLD_DATE: ${{ needs.changed-files-dags.outputs.GITHUB_OLD_DATE }}
+          GITHUB_NEW_DATE: ${{ needs.changed-files-dags.outputs.GITHUB_NEW_DATE }}
         run: |
           python3 -c \
           'from datetime import datetime as dt;'\
           'import os;'\
-          'print(os.environ["NEW_DATE"],os.environ["OLD_DATE"]);'\
-          'date_diff = dt.strptime(os.environ["NEW_DATE"], "%Y-%m-%d") - dt.strptime(os.environ["OLD_DATE"], "%Y-%m-%d")'
+          'print(os.environ["GITHUB_NEW_DATE"],os.environ["GITHUB_OLD_DATE"]);'\
+          'date_diff = dt.strptime(os.environ["GITHUB_NEW_DATE"], "%Y-%m-%d") - dt.strptime(os.environ["GITHUB_OLD_DATE"], "%Y-%m-%d")'
           'if data_diff.days > 92: raise ValueError("date diff to high");'\
