@@ -22,11 +22,7 @@ jobs:
       - name: test-changed-files
         run: |
           echo $GITHUB_OLD_DATE
-          echo $GITHUB_NEW_DATE
       - name: test dates
-        env:
-          GITHUB_OLD_DATE: ${{ needs.changed-files-dags.outputs.GITHUB_OLD_DATE }}
-          GITHUB_NEW_DATE: ${{ needs.changed-files-dags.outputs.GITHUB_NEW_DATE }}
         run: |
           python3 -c \
           'from datetime import datetime as dt;'\
