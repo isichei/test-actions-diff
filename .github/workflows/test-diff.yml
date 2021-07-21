@@ -27,5 +27,6 @@ jobs:
           python3 -c \
           'from datetime import datetime as dt;'\
           'import os;'\
-          'date_diff = dt.strptime(os.environ["NEW_DATE"], "%Y-%m-%d") - dt.strptime(os.environ["OLD_DATE"], "%Y-%m-%d")'
+          'print(os.environ["NEW_DATE"],os.environ["OLD_DATE"]);'\
+          'date_diff = dt.strptime(os.environ["NEW_DATE"], "%Y/%m/%d") - dt.strptime(os.environ["OLD_DATE"], "%Y/%m/%d")'
           'if data_diff.days > 92: raise ValueError("date diff to high");'\
