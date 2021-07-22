@@ -21,7 +21,7 @@ jobs:
       - name: test-changed-files
         run: |
           echo "GITHUB_NEW_DATE=$(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} -U0 | grep 'review_date:' | cut -d\  -f2 | tail -n 1)" >> $GITHUB_ENV
-          echo $GITHUB_OLD_DATE
+          echo "${{ env.GITHUB_OLD_DATE }}
       - name: test dates
         run: |
           python3 -c \
