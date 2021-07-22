@@ -18,15 +18,15 @@ jobs:
         # Set outputs using the command.
         run: |
           echo "GITHUB_OLD_DATE=$(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} -U0 | grep 'review_date:' | cut -d\  -f2 | tail -n +2| head -n 1)" >> $GITHUB_ENV
-          echo "GITHUB_NEW_DATE=$(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} -U0 | grep 'review_date:' | cut -d\  -f2 | tail -n 1)" >> $GITHUB_ENV
       - name: test-changed-files
         run: |
+          echo "GITHUB_NEW_DATE=$(git diff --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} -U0 | grep 'review_date:' | cut -d\  -f2 | tail -n 1)" >> $GITHUB_ENV
           echo $GITHUB_OLD_DATE
       - name: test dates
         run: |
           python3 -c \
           'from datetime import datetime as dt;'\
           'import os;'\
-          'print(os.getenv["INPUT_GITHUB_NEW_DATE"]);'\
-          '#date_diff = dt.strptime(os.environ["GITHUB_NEW_DATE"], "%Y-%m-%d") - dt.strptime(os.environ["GITHUB_OLD_DATE"], "%Y-%m-%d")'
+          'print(os.getenv['GITHUB_NEW_DATE']);'\
+          '#date_diff = dt.strptime(os.environ['GITHUB_NEW_DATE'], "%Y-%m-%d") - dt.strptime(os.environ['GITHUB_OLD_DATE'], "%Y-%m-%d")'
           '#if data_diff.days > 92: raise ValueError("date diff to high");'\
