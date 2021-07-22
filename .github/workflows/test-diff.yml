@@ -25,7 +25,6 @@ jobs:
         env:
           GITHUB_OLD_DATE: ${{ env.GITHUB_OLD_DATE }}
         run: |
-          GITHUB_OLD_DATE
           python3 -c \
           'from datetime import datetime as dt;'\
           'import os;'\
